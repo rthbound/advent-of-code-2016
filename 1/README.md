@@ -1,0 +1,3 @@
+```
+  $ ruby solution.rb
+```
