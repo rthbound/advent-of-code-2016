@@ -26,7 +26,8 @@ lines.each do |line|
   line.split(//).each do |command|
     digit = Complex(
       (dpad[command] + digit).real.clamp(-1, 1),
-      (dpad[command] + digit).imag.clamp(-1, 1))
+      (dpad[command] + digit).imag.clamp(-1, 1)
+    )
   end
 
   $stdout.print pad[digit]
