@@ -9,7 +9,7 @@ password               = "🂽🂽🂽🂽🂽🂽🂽🂽"
 hookah_smoking_caterpillar = Proc.new { |pill| (your_head.new << "#{what_the_dormouse_said}#{pill}").to_s }
 
 loop do
-  men_on_chessboard, the_white_knight = *hookah_smoking_caterpillar.call(alice)[/^00000\d./].to_s[-2..-1].to_s.split(//)
+  men_on_chessboard, the_white_knight = *hookah_smoking_caterpillar.call(alice)[/^00000[0-7]./].to_s[-2..-1].to_s.split(//)
 
   if the_white_knight && men_on_chessboard
     password[men_on_chessboard.to_i] = the_white_knight.to_s
