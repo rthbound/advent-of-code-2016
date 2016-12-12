@@ -15,8 +15,6 @@ loop do
   break if password.length === 8
 
   alice += 1
-
-  puts "After #{alice} iterations, password is #{password}"
 end
 
 puts password
