@@ -12,4 +12,5 @@ ruby 5/solution_part_2.rb
 ruby 6/solution.rb # both
 ruby 7/solution.rb # both
 ruby 8/solution.rb # both
+ruby 9/solution_part_1.rb
 ```
