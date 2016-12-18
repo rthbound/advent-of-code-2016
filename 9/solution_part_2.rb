@@ -2,31 +2,33 @@
 require 'benchmark'
 input  = File.read(File.dirname(__FILE__) + "/input").rstrip
 
+class SushiStackError < SystemStackError
+end
 class SushiChef
   def initialize(input, output = 0)
-    @input = input
+    @input  = input
     @output = output
     @stack  = 0
   end
 
   def hajime
     @stack += 1
-    raise SystemStackError if @stack > 17000
+    raise SushiStackError if @stack > 2777
     snack
 
-    directions = @input.join[/\d+x\d+/]
+    directions = @input[/\d+x\d+/]
 
     if directions
       entries, n = *directions.split("x").map(&:to_i)
 
-      (directions.length + 2).times { @input.shift }
+      @input.slice! 0..(directions.length + 1)
 
-      @input.unshift *(@input.first(entries) * (n-1))
+      @input.prepend(@input[0..entries - 1] * (n-1))
 
+      puts "Fetch more soy sauce. #{ @output } down, #{ @input.length } to go. #{ @input.count("(") } instructions await."
       hajime()
     end
-  rescue SystemStackError
-    puts "#{@input.length} remain... better re-up on soy sauce."
+  rescue SushiStackError
   end
 
   def input
@@ -42,25 +44,25 @@ class SushiChef
     def snack
       @input.index("(").tap do |o|
         case o
+        when 0
         when nil
           @output += @input.length
-          @input = []
+          @input = ""
         else
           @output += o
-          @input.shift o
+          @input.slice! 0..(o-1)
         end
       end
     end
 end
 
 def run_solution(puzzle)
-  s = SushiChef.new(puzzle.chars)
+  s = SushiChef.new(puzzle)
   loop do
     s.hajime
 
     break if s.input.empty?
 
-    input, output = s.input, s.output
     s = SushiChef.new(s.input, s.output)
   end
 
@@ -69,11 +71,17 @@ def run_solution(puzzle)
   puts "☃ Thank you, have a nice day ☃"
 end
 
-run_solution(input)
 
-#%w{
-#  (3x3)XYZ
-#  X(8x2)(3x3)ABCY
-#  (25x3)(3x3)ABC(2x3)XY(5x2)PQRSTX(18x9)(3x2)TWO(5x7)SEVEN
-#  (27x12)(20x12)(13x14)(7x10)(1x12)A
-#}.each {|s| run_solution(s) }
+%w{
+  (3x3)XYZ
+  X(8x2)(3x3)ABCY
+  (27x12)(20x12)(13x14)(7x10)(1x12)A
+  (25x3)(3x3)ABC(2x3)XY(5x2)PQRSTX(18x9)(3x2)TWO(5x7)SEVEN
+}.each {|s| run_solution(s) }
+
+puts "#" * 80
+puts "#" * 80
+puts "#" * 80
+puts "#" * 80
+
+run_solution(input)
