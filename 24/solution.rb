@@ -77,19 +77,32 @@ class TravelAgent
   end
 
   def whats_the_damage?
-    @world.destinations.permutation(@world.destinations.length).each.map { |schedule|
-      @first_class.travel_time(@world.home, schedule[0]) +
-      schedule.each_cons(2).map {|leg|
-        @first_class.travel_time(leg.first, leg.last)
-      }.sum
-    }.min
+    travel_logs = @world.destinations.permutation(@world.destinations.length).each.map { |schedule|
+      [
+        schedule,
+        @first_class.travel_time(@world.home, schedule[0]) +
+        schedule.each_cons(2).map {|leg|
+          @first_class.travel_time(leg.first, leg.last)
+        }.sum
+      ]
+    }.to_h
+
+    favorite_trip = travel_logs.detect { |k,v|
+      v == travel_logs.values.min
+    }
+
+    {
+      globetrotting: favorite_trip[-1],
+      return_flight: @first_class.travel_time(favorite_trip[0][-1], @world.home)
+    }
   end
 end
 
 world = World.new("test_input.txt")
 print "Sample: "
-puts TravelAgent.new(world).whats_the_damage?
+puts TravelAgent.new(world).whats_the_damage?[:globetrotting]
 
 world = World.new("input.txt")
-print "P1: "
-puts TravelAgent.new(world).whats_the_damage?
+damage = TravelAgent.new(world).whats_the_damage?
+puts "P1: #{damage[:globetrotting]}"
+puts "P2: #{damage[:globetrotting] + damage[:return_flight]}"
